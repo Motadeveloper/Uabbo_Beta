@@ -288,3 +288,169 @@ button.btn, a.btn {
     text-align: left;
     margin-top: 10px;
 }
+
+/* Estilo para dispositivos móveis */
+@media (max-width: 768px) {
+    .room-details {
+        display: flex;
+        flex-direction: column; /* Colocar a imagem em cima */
+        align-items: center;
+    }
+    .room-thumbnail {
+        margin-bottom: 15px;
+    }
+}
+
+/* Botão "Ir para o quarto" */
+.go-to-room-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(90deg, #009929, #5ccb5f);
+    color: white;
+    font-weight: bold;
+    border-radius: 20px;
+    padding: 10px 15px;
+    border: none;
+    text-decoration: none;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    position: relative;
+    overflow: hidden;
+}
+
+.go-to-room-button img {
+    margin-right: 10px;
+}
+
+.go-to-room-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.go-to-room-button::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: -15px;
+    transform: translateY(-50%);
+    border-left: 10px solid white;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+}
+
+
+.custom-button {
+    display: inline-flex;
+    align-items: center;
+    background: linear-gradient(to bottom, #009929 50%, #008f1f 50%);
+    border: none;
+    color: white;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    padding: 10px 15px;
+    position: relative;
+    cursor: pointer;
+    text-decoration: none;
+    clip-path: polygon(0 0, 90% 0, 100% 50%, 90% 100%, 0 100%);
+    transition: background 0.3s ease;
+}
+
+.custom-button img {
+    margin-right: 10px;
+    height: 16px;
+    width: 16px;
+}
+
+.custom-button:hover {
+    background: linear-gradient(to bottom, #008f1f 50%, #009929 50%);
+}
+
+
+#createTopicBox button img, #createTopicBox a img {
+    width: 16px; /* Diminui o tamanho dos ícones nos botões */
+    height: auto;
+    margin-right: 4px; /* Espaçamento menor entre ícone e texto */
+}
+
+/* Garantindo responsividade para dispositivos menores */
+@media (max-width: 480px) {
+    #createTopicBox {
+        padding: 6px; /* Reduz ainda mais o padding do card */
+    }
+
+    #createTopicBox input {
+        font-size: 10px; /* Texto menor no input */
+        height: 28px; /* Altura menor para o input */
+        padding: 4px; /* Menor espaçamento interno no input */
+    }
+
+    #createTopicBox button, #createTopicBox a {
+        font-size: 10px; /* Texto menor nos botões */
+        padding: 4px 6px; /* Menor espaçamento interno nos botões */
+    }
+
+    #createTopicBox button img, #createTopicBox a img {
+        width: 14px; /* Ícones ainda menores */
+        margin-right: 2px; /* Menor espaçamento entre ícone e texto */
+    }
+}
+
+/* Reduzindo os ícones nos botões e no input */
+#publishButton img, .btn-yellow img, .btn-danger img {
+    width: 16px; /* Tamanho reduzido dos ícones */
+    height: auto;
+}
+
+@media (max-width: 480px) {
+    #createTopicBox {
+        gap: 6px; /* Menor espaçamento entre os elementos */
+    }
+
+    #createTopicBox input {
+        font-size: 10px; /* Texto menor */
+        height: 28px; /* Altura menor */
+        padding: 4px; /* Menor espaçamento interno */
+    }
+
+    #createTopicBox button, #createTopicBox a {
+        font-size: 10px; /* Texto menor */
+        padding: 4px; /* Menor espaçamento interno */
+    }
+
+    #createTopicBox .button-container {
+        flex-wrap: wrap; /* Permite que os botões quebrem linha, se necessário */
+        gap: 4px; /* Espaçamento menor entre os botões */
+    }
+}
+
+
+
+/* Ajustes adicionais para telas menores que 350px */
+@media (max-width: 400px) {
+    #createTopicBox {
+        gap: 3px; /* Reduz o espaçamento interno */
+        padding: 3px; /* Reduz ainda mais o padding do card */
+    }
+
+    #createTopicBox input {
+        font-size: 8px; /* Texto ainda menor */
+        height: 22px; /* Altura menor */
+        padding: 2px; /* Menor espaçamento interno */
+    }
+
+    #createTopicBox button, #createTopicBox a {
+        font-size: 8px; /* Texto menor nos botões */
+        padding: 2px 3px; /* Reduz o espaçamento interno */
+    }
+
+    #createTopicBox .button-container {
+        flex-direction: column; /* Empilha os botões verticalmente */
+        gap: 2px; /* Reduz o espaçamento entre botões */
+    }
+
+    #createTopicBox button img, #createTopicBox a img {
+        width: 12px; /* Reduz ainda mais o tamanho dos ícones */
+        height: auto;
+        margin-right: 2px; /* Pequeno espaçamento entre ícone e texto */
+    }
+}

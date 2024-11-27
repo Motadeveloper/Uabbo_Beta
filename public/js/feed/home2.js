@@ -11,7 +11,7 @@ function toggleDeleteConfirm(topicId, showConfirm) {
     const replyButton = document.getElementById(`replyButton-${topicId}`);
     
     confirmBox.style.display = showConfirm ? 'block' : 'none';
-    deleteButton.style.display = showConfirm ? 'none' : 'inline-block';
+    deleteButton.style.display = showConfirm ? 'none' : 'inlinze-block';
     replyButton.style.display = showConfirm ? 'none' : 'inline-block';
 }
 

@@ -8,14 +8,24 @@ function confirmReport() {
 
     const contentTextarea = document.querySelector('textarea[name="content"]');
     contentTextarea.value = `
-    <strong>Denúncia de Habbo</strong><br>
-    <strong>Nome:</strong> ${name}<br>
-    <strong>Missão:</strong> ${motto}<br>
-    <strong>Online:</strong> ${onlineStatus}<br>
-    <strong>Último Acesso:</strong> ${lastAccess}<br>
-    <strong>Membro Desde:</strong> ${memberSince}<br>
-    <strong>Motivo da Denúncia:</strong> ${reason}<br>
-    `;
+<div style="display: flex; align-items: flex-start; gap: 15px; background-color: #ffcccc; padding: 15px; border-radius: 15px; width: 100%; max-width: 500px;">
+    <!-- Avatar -->
+    <div style="flex-shrink: 0;">
+        <img src="${avatarUrl}" alt="Avatar" style="border-radius: 50%; width: 80px; height: 80px; object-fit: cover; border: 2px solid #ff0000;">
+    </div>
+    <!-- Informações -->
+    <div style="flex-grow: 1;">
+        <strong style="font-size: 1.2em; color: #900;">Nome:</strong> ${name}<br>
+        <strong style="font-size: 1.2em; color: #900;">Motivo:</strong> ${reason}<br>
+        <br>
+        <strong>Missão:</strong> ${motto}<br>
+        <strong>Online:</strong> ${onlineStatus}<br>
+        <strong>Último Acesso:</strong> ${lastAccess}<br>
+        <strong>Membro Desde:</strong> ${memberSince}<br>
+    </div>
+</div>
+`;
+
 
     // Submete o formulário automaticamente após adicionar o conteúdo
     document.getElementById('createTopicForm').submit();
@@ -98,20 +108,33 @@ function postHabboReport() {
     const memberSince = document.getElementById('reportMemberSince').textContent;
     const reason = document.getElementById('reportReason').value.trim();
 
+    // Montar a URL do avatar usando o nome do usuário
+    const avatarUrl = `http://www.habbo.com.br/habbo-imaging/avatarimage?&user=${encodeURIComponent(name)}&size=m&head_direction=2&direction=3&headonly=0&img_format=png&gesture=srp&action=std`;
+
     if (!reason) {
         alert('Por favor, preencha o motivo da denúncia.');
         return;
     }
 
     const content = `
-        <strong>Denúncia de Habbo</strong><br>
+<div style="display: flex; align-items: flex-start; gap: 15px; background-color: #ffcccc; padding: 15px; border-radius: 15px; width: 100%; max-width: 500px;">
+    <!-- Avatar -->
+    <div style="flex-shrink: 0;">
+        <img src="${avatarUrl}" alt="Avatar de ${name}" style="border-radius: 50%; width: 80px; height: 80px; object-fit: cover; border: 2px solid #ff0000;">
+    </div>
+    <!-- Informações -->
+    <div style="flex-grow: 1;">
+        <strong style="font-size: 1.2em; color: #900;">Denúncia de Habbo</strong><br>
         <strong>Nome:</strong> ${name}<br>
+        <strong>Motivo:</strong> ${reason}<br>
+        <br>
         <strong>Missão:</strong> ${motto}<br>
         <strong>Online:</strong> ${onlineStatus}<br>
         <strong>Último Acesso:</strong> ${lastAccess}<br>
         <strong>Membro Desde:</strong> ${memberSince}<br>
-        <strong>Motivo da Denúncia:</strong> ${reason}<br>
-    `;
+    </div>
+</div>
+`;
 
     const contentTextarea = document.querySelector('textarea[name="content"]');
     contentTextarea.value = content;
@@ -119,3 +142,4 @@ function postHabboReport() {
     // Submete o formulário automaticamente após adicionar o conteúdo
     document.getElementById('createTopicForm').submit();
 }
+

@@ -1,4 +1,12 @@
 function togglePromoteRoomForm() {
+
+     // Verificar se o usuário está autenticado
+    if (typeof isAuthenticated !== 'undefined' && isAuthenticated === 'false') {
+        // Redirecionar para a tela de login se o usuário não estiver autenticado
+        window.location.href = '/login';
+        return;
+    }
+
     // Verificar se os elementos existem antes de manipulá-los
     const reportButton = document.querySelector('button[onclick="toggleReportHabboForm()"]');
     const promoteForm = document.getElementById('promoteRoomForm');
@@ -42,7 +50,7 @@ function cancelPromotion() {
 
 function fetchRoomData() {
     const roomIdInput = document.getElementById('roomId');
-    const roomId = roomIdInput ? roomIdInput.value.trim() : null;
+    const roomId = roomIdInput?.value.trim();
 
     if (!roomId) {
         alert('Por favor, insira o ID do quarto.');
@@ -62,27 +70,32 @@ function fetchRoomData() {
         .then(data => {
             console.log('Dados do quarto recebidos:', data);
 
-            // Exibir os dados na prévia
-            document.getElementById('roomName').textContent = data.name || 'N/A';
-            document.getElementById('roomDescription').textContent = data.description || 'N/A';
-            // Formatar a data para o formato brasileiro com dia da semana capitalizado
-            const creationDate = new Date(data.creationTime);
+            // Atualizar elementos na prévia
+            const roomName = data.name || 'N/A';
+            const roomDescription = data.description || 'N/A';
+            const roomOwner = data.ownerName || 'N/A';
+
+            const creationDate = new Date(data.creationTime || Date.now());
             const dayOfWeek = creationDate.toLocaleDateString('pt-BR', { weekday: 'long' });
-            const capitalizedDayOfWeek = dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1);
+            const formattedDay = dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1);
 
             const formattedDate = creationDate.toLocaleDateString('pt-BR', {
                 day: '2-digit',
                 month: '2-digit',
                 year: 'numeric',
             });
+
             const formattedTime = creationDate.toLocaleTimeString('pt-BR', {
                 hour: '2-digit',
                 minute: '2-digit',
             });
 
-            document.getElementById('roomCreationTime').textContent = `${capitalizedDayOfWeek}, ${formattedDate}, às ${formattedTime}`;
-            document.getElementById('roomOwner').textContent = data.ownerName || 'N/A';
-            document.getElementById('roomOwner').textContent = data.ownerName || 'N/A';
+            // Atualizar campos da prévia
+            document.getElementById('roomName').textContent = roomName;
+            document.getElementById('roomDescription').textContent = roomDescription;
+            document.getElementById('roomCreationTime').textContent = `${formattedDay}, ${formattedDate}, às ${formattedTime}`;
+            document.getElementById('roomOwner').textContent = roomOwner;
+
             const groupElement = document.getElementById('roomGroup');
             if (groupElement) {
                 groupElement.textContent = data.habboGroupId
@@ -90,13 +103,22 @@ function fetchRoomData() {
                     : 'Sem grupo associado.';
             }
 
-            // Exibir a imagem do quarto
+            // Atualizar a imagem do quarto
             const roomThumbnail = document.getElementById('roomThumbnail');
-            if (roomThumbnail) {
-                roomThumbnail.src = data.thumbnailUrl || 'https://via.placeholder.com/150'; // URL padrão caso não haja imagem
+            roomThumbnail.src = data.thumbnailUrl || 'https://via.placeholder.com/150';
+
+            // Adicionar o botão "Ir para o Quarto"
+            const roomButtonContainer = document.getElementById('roomButtonContainer');
+            if (roomButtonContainer) {
+                roomButtonContainer.innerHTML = `
+                    <a href="https://www.habbo.com.br/room/${roomId}" target="_blank" class="custom-button">
+                        <img src="https://www.habborator.org/archive/icons/mini/new_07.gif" alt="Ícone">
+                        <span>Ir para o quarto</span>
+                    </a>
+                `;
             }
 
-            // Exibir o contêiner da prévia
+            // Mostrar o contêiner da prévia
             const roomDetails = document.getElementById('roomDetails');
             if (roomDetails) {
                 roomDetails.style.display = 'block';
@@ -110,40 +132,65 @@ function fetchRoomData() {
 
 
 function confirmRoomPromotion() {
-    const roomName = document.getElementById('roomName').textContent || 'N/A';
-    const roomDescription = document.getElementById('roomDescription').textContent || 'N/A';
-    const roomCreationTime = document.getElementById('roomCreationTime').textContent || 'N/A';
-    const roomOwner = document.getElementById('roomOwner').textContent || 'N/A';
+    // Obter os dados da prévia
+    const roomName = document.getElementById('roomName')?.textContent.trim() || 'N/A';
+    const roomDescription = document.getElementById('roomDescription')?.textContent.trim() || 'N/A';
+    const roomCreationTime = document.getElementById('roomCreationTime')?.textContent.trim() || 'N/A';
+    const roomOwner = document.getElementById('roomOwner')?.textContent.trim() || 'N/A';
 
-    // Verifica se a imagem do quarto existe
     const roomThumbnailElement = document.getElementById('roomThumbnail');
-    const roomThumbnail = roomThumbnailElement && roomThumbnailElement.src
-        ? roomThumbnailElement.src
-        : 'https://via.placeholder.com/150'; // Imagem padrão
+    const roomThumbnail = roomThumbnailElement?.src || 'https://via.placeholder.com/150';
 
-    // Conteúdo formatado para o input de pensamento
+    const roomIdInput = document.getElementById('roomId');
+    const roomId = roomIdInput?.value.trim() || 'N/A';
+
+    // Construir o conteúdo formatado com o botão "Ir para o quarto"
     const content = `
-        <div style="display: flex; align-items: flex-start;">
-            <img src="${roomThumbnail}" alt="Imagem do Quarto" style="width: 150px; height: 150px; margin-right: 15px; border-radius: 10px; box-shadow: 0px 4px 8px rgba(0,0,0,0.2);">
-            <div>
-                <strong>Divulgação do Quarto</strong><br>
-                <strong>Nome:</strong> ${roomName}<br>
-                <strong>Descrição:</strong> ${roomDescription}<br>
-                <strong>Data de Criação:</strong> ${roomCreationTime}<br>
-                <strong>Proprietário:</strong> ${roomOwner}<br>
+        <div style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 15px; padding: 10px;">
+            <img src="${roomThumbnail}" alt="Imagem do Quarto" style="
+                width: 100px; 
+                height: 100px; 
+                border-radius: 10px; 
+                box-shadow: 0px 4px 8px rgba(0,0,0,0.2); 
+                flex-shrink: 0;
+                transition: width 0.3s, height 0.3s;
+            " class="room-thumbnail">
+            <div style="flex: 1; min-width: 200px;">
+                <h3 style="margin: 0; font-size: 18px;">Divulgação do Quarto</h3>
+                <p style="margin: 5px 0; font-size: 14px;"><strong>Nome:</strong> ${roomName}</p>
+                <p style="margin: 5px 0; font-size: 14px;"><strong>Descrição:</strong> ${roomDescription}</p>
+                <p style="margin: 5px 0; font-size: 14px;"><strong>Data de Criação:</strong> ${roomCreationTime}</p>
+                <p style="margin: 5px 0; font-size: 14px;"><strong>Proprietário:</strong> ${roomOwner}</p>
+                <a href="https://www.habbo.com.br/room/${roomId}" target="_blank" 
+                    style="display: inline-flex; align-items: center; background: linear-gradient(to bottom, #009929 50%, #008f1f 50%);
+                    color: white; font-family: Arial, sans-serif; font-size: 14px; padding: 10px 15px; text-decoration: none;
+                    clip-path: polygon(0 0, 90% 0, 100% 50%, 90% 100%, 0 100%); transition: background 0.3s ease; border: none;
+                    cursor: pointer; margin-top: 10px; width: fit-content;">
+                    <img src="https://www.habborator.org/archive/icons/mini/new_07.gif" alt="Ícone" style="margin-right: 10px; width: 16px; height: 16px;">
+                    Ir para o quarto
+                </a>
             </div>
         </div>
     `;
 
-    // Inserir o conteúdo no textarea de pensamento
+    // Atualizar o conteúdo do textarea
     const contentTextarea = document.querySelector('textarea[name="content"]');
-    if (contentTextarea) {
-        contentTextarea.value = content;
+    if (!contentTextarea) {
+        alert('Erro: Área de conteúdo não encontrada.');
+        return;
     }
+    contentTextarea.value = content;
 
-    // Submeter o formulário
+    // Submeter o formulário automaticamente
     const topicForm = document.getElementById('createTopicForm');
     if (topicForm) {
         topicForm.submit();
+    } else {
+        alert('Erro: Formulário não encontrado.');
     }
+}
+
+function redirectToLogin() {
+    // Redireciona o usuário para a tela de login
+    window.location.href = '/login';
 }

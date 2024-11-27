@@ -73,3 +73,9 @@ Route::middleware('auth')->group(function () {
 Route::get('/sorteios/create/form', [SorteioController::class, 'createForm'])->name('sorteios.create.form');
 Route::post('/sorteios/{sorteio}/comentarios', [ComentarioController::class, 'store'])->name('sorteios.comentarios');
 Route::get('/api/sorteios', [SorteioController::class, 'getSorteios'])->name('sorteios.api');
+
+
+
+Route::fallback(function () {
+    return redirect('/');
+});

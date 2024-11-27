@@ -36,43 +36,77 @@
 
 
 
-        <div id="promoteRoomForm" style="display: none;" class="card mb-4 p-3">
+        <div id="promoteRoomForm" style="display: none; background-color: white; padding: 20px; border-radius: 10px;" class="card mb-4 p-3">
     <h5>Divulgar Quarto do Habbo</h5>
-    <div class="d-flex">
+    <div class="d-flex align-items-center flex-wrap">
         <!-- Imagem do usuário à esquerda -->
         @auth
-            <img src="https://www.habbo.com.br/habbo-imaging/avatarimage?user={{ Auth::user()->name }}&action=std&direction=2&head_direction=3&gesture=sml&size=l" alt="Avatar do usuário" class="rounded-circle me-3" width="70" height="120">
+            <img src="https://www.habbo.com.br/habbo-imaging/avatarimage?user={{ Auth::user()->name }}&action=std&direction=2&head_direction=3&gesture=sml&size=l" 
+                 alt="Avatar do usuário" class="rounded-circle me-3" width="70" height="120">
         @else
-            <img src="https://www.habbo.com.br/habbo-imaging/avatarimage?user=4queijos&action=std&direction=2&head_direction=3&gesture=sml&size=l" alt="Avatar padrão do Habbo" class="rounded-circle me-3" width="70" height="120">
+            <img src="https://www.habbo.com.br/habbo-imaging/avatarimage?user=4queijos&action=std&direction=2&head_direction=3&gesture=sml&size=l" 
+                 alt="Avatar padrão do Habbo" class="rounded-circle me-3" width="70" height="120">
         @endauth
 
         <div class="form-group w-100">
             <label for="roomId">ID do Quarto:</label>
             <input type="text" id="roomId" class="form-control" placeholder="Digite o ID do quarto">
-            <button type="button" class="btn btn-primary mt-2" onclick="{{ Auth::check() ? 'fetchRoomData()' : 'redirectToLogin()' }}">Buscar Quarto</button>
-            <button type="button" class="btn btn-secondary mt-2" onclick="cancelPromotion()">Cancelar</button>
+            <div class="d-flex justify-content-between mt-2">
+                <button type="button" class="btn btn-primary btn-sm me-2" onclick="{{ Auth::check() ? 'fetchRoomData()' : 'redirectToLogin()' }}">Buscar Quarto</button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="cancelPromotion()">Cancelar</button>
+            </div>
         </div>
     </div>
 
     <div id="roomDetails" style="display: none; margin-top: 20px;">
-    <h6>Detalhes do Quarto</h6>
-    <!-- Imagem do quarto -->
-    <img id="roomThumbnail" src="" alt="Imagem do Quarto" style="width: 150px; height: 150px; margin-bottom: 10px; border-radius: 10px; box-shadow: 0px 4px 8px rgba(0,0,0,0.2);">
+        <h6>Detalhes do Quarto</h6>
 
-    <p><strong>Nome do Quarto:</strong> <span id="roomName">N/A</span></p>
-    <p><strong>Descrição:</strong> <span id="roomDescription">N/A</span></p>
-    <p><strong>Data de Criação:</strong> <span id="roomCreationTime">N/A</span></p>
-    <p><strong>Proprietário:</strong> <span id="roomOwner">N/A</span></p>
-    <p><strong>Grupo:</strong> <span id="roomGroup">N/A</span></p>
+        <!-- Layout responsivo para detalhes do quarto -->
+        <div class="room-details" style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 15px;">
+            <!-- Imagem do quarto -->
+            <img id="roomThumbnail" src="" alt="Imagem do Quarto" 
+                 style="width: 150px; height: 150px; border-radius: 10px; box-shadow: 0px 4px 8px rgba(0,0,0,0.2);">
 
-    <!-- Botão de confirmação -->
-    <button type="button" class="btn btn-success mt-2" onclick="confirmRoomPromotion()">Confirmar Divulgação</button>
+            <!-- Informações do quarto -->
+            <div style="flex: 1; min-width: 250px;">
+                <p>
+                    <img src="https://www.habborator.org/archive/icons/mini/new_17.gif" alt="Ícone Nome" style="width: 16px; height: 16px; margin-right: 5px; vertical-align: middle;">
+                    <strong>Nome do Quarto:</strong> <span id="roomName">N/A</span>
+                </p>
+                <p>
+                    <img src="https://www.habborator.org/archive/icons/mini/tab_icon_03_community.gif" alt="Ícone Descrição" style="width: 16px; height: 16px; margin-right: 5px; vertical-align: middle;">
+                    <strong>Descrição:</strong> <span id="roomDescription">N/A</span>
+                </p>
+                <p>
+                    <img src="https://www.habborator.org/archive/icons/mini/v20_6.gif" alt="Ícone Data" style="width: 16px; height: 16px; margin-right: 5px; vertical-align: middle;">
+                    <strong>Data de Criação:</strong> <span id="roomCreationTime">N/A</span>
+                </p>
+                <p>
+                    <img src="https://www.habborator.org/archive/icons/mini/new_19.gif" alt="Ícone Proprietário" style="width: 16px; height: 16px; margin-right: 5px; vertical-align: middle;">
+                    <strong>Proprietário:</strong> <span id="roomOwner">N/A</span>
+                </p>
+                <p>
+                    <img src="https://www.habborator.org/archive/icons/mini/tab_icon_03_community.gif" alt="Ícone Grupo" style="width: 16px; height: 16px; margin-right: 5px; vertical-align: middle;">
+                    <strong>Grupo:</strong> <span id="roomGroup">N/A</span>
+                </p>
+                <div class="custom-button" style="display: inline-flex; align-items: center; background: linear-gradient(to bottom, #009929 50%, #008f1f 50%); color: white; font-family: Arial, sans-serif; font-size: 14px; padding: 10px 15px; text-decoration: none; clip-path: polygon(0 0, 90% 0, 100% 50%, 90% 100%, 0 100%); transition: background 0.3s ease; border: none; cursor: pointer; margin-top: 10px;">
+                    <img src="https://www.habborator.org/archive/icons/mini/new_07.gif" alt="Ícone Ir para o Quarto" style="margin-right: 10px; width: 16px; height: 16px;">
+                    <span>Ir para o quarto</span>
+                </div>
 </div>
+</div>
+
+
+        <!-- Botão de confirmação -->
+        <button type="button" class="btn btn-success mt-2" onclick="confirmRoomPromotion()">Divulgar</button>
+    </div>
+
+
 </div>
 
 
         <!-- Formulário de Denúncia do Habbo -->
-<div id="reportHabboForm" style="display: none;" class="card mb-4 p-3">
+<div id="reportHabboForm" style="display: none; background-color: #fff; border: none;" class="card mb-4 p-3">
     <h5 class="mb-3">Denunciar Habbo</h5>
     <div class="d-flex align-items-center mb-3">
         <!-- Avatar dinâmico -->
@@ -86,32 +120,35 @@
         <!-- Campo para o nickname -->
         <div class="form-group w-100">
             <label for="habboNickname" class="form-label">Nickname do Habbo:</label>
-            <input type="text" id="habboNickname" class="form-control" placeholder="Digite o nickname do Habbo">
+            <input type="text" id="habboNickname" class="form-control" placeholder="Digite o nickname do Habbo"
+                   style="background-color: #f5f5f5; border: none; box-shadow: none;">
         </div>
     </div>
     
     <!-- Motivo da denúncia -->
     <div class="form-group mb-3">
         <label for="reportReason" class="form-label">Motivo da Denúncia:</label>
-        <textarea id="reportReason" class="form-control" rows="3" placeholder="Explique o motivo da denúncia"></textarea>
+        <textarea id="reportReason" class="form-control" rows="3" placeholder="Explique o motivo da denúncia"
+                  style="background-color: #f5f5f5; border: none; box-shadow: none;"></textarea>
     </div>
 
     <!-- Prévia dos dados do Habbo -->
-<div id="reportPreview" style="display: none;">
-    <p><strong>Nome:</strong> <span id="reportName">N/A</span></p>
-    <p><strong>Missão:</strong> <span id="reportMotto">N/A</span></p>
-    <p><strong>Online:</strong> <span id="reportOnlineStatus">N/A</span></p>
-    <p><strong>Último Acesso:</strong> <span id="reportLastAccess">N/A</span></p>
-    <p><strong>Membro Desde:</strong> <span id="reportMemberSince">N/A</span></p>
-</div>
+    <div id="reportPreview" style="display: none;">
+        <p><strong>Nome:</strong> <span id="reportName">N/A</span></p>
+        <p><strong>Missão:</strong> <span id="reportMotto">N/A</span></p>
+        <p><strong>Online:</strong> <span id="reportOnlineStatus">N/A</span></p>
+        <p><strong>Último Acesso:</strong> <span id="reportLastAccess">N/A</span></p>
+        <p><strong>Membro Desde:</strong> <span id="reportMemberSince">N/A</span></p>
+    </div>
     
     <!-- Botões de ação -->
-    <div class="d-flex justify-content-between">
-    <button type="button" id="postReportButton" class="btn btn-danger mt-3" style="display: none;" onclick="postHabboReport()">Postar Denúncia</button>
-        <button type="button" class="btn btn-primary btn-sm" onclick="fetchHabboData()">Buscar Informações</button>
+    <div class="d-flex justify-content-start gap-2 mt-3">
+        <button type="button" id="postReportButton" class="btn btn-danger btn-sm" style="display: none;" onclick="postHabboReport()">Postar Denúncia</button>
         <button type="button" class="btn btn-secondary btn-sm" onclick="cancelReport()">Cancelar</button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="fetchHabboData()">Buscar Informações</button>
     </div>
 </div>
+
 
 
 
@@ -178,7 +215,13 @@
 </div>
 
 
-
+<style>@media (max-width: 600px) {
+    .room-thumbnail {
+        width: 100px !important;
+        height: 100px !important;
+    }
+}
+</style>
 
 <script src="{{ asset('js/feed/comentarios.js') }}"></script>
 <script src="{{ asset('js/feed/home.js') }}"></script>

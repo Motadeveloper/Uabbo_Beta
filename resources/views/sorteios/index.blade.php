@@ -13,7 +13,7 @@
         @if(auth()->check())
         <button id="showCreateForm" class="custom-button">
     <img src="https://www.habboassets.com/images/catalog-icons/214" alt="Ícone" class="button-icon">
-    Cridar um Sorteio
+    Criar um Sorteio
 </button>
     <button id="cancelCreateForm" class="btn btn-secondary mb-3" style="display: none;">Cancelar</button>
 @else
