@@ -1,6 +1,17 @@
 @extends('layouts.app')
 
 @section('content')
+<meta name="description" content="Explore sorteios no Habbo! Crie ou participe de sorteios com prêmios incríveis como câmbios e HCs. Confira sorteios em andamento e os realizados.">
+<meta property="og:title" content="Sorteios - Participe ou Crie no Habbo">
+<meta property="og:description" content="Participe de sorteios incríveis no Habbo! Crie seus próprios sorteios ou confira os já realizados.">
+<meta property="og:image" content="https://uabbo.com/img/image_event_settings.png">
+<meta property="og:url" content="https://uabbo.com">
+<meta property="og:type" content="website">
+
+<meta name="twitter:card" content="https://uabbo.com/img/image_event_settings.png">
+<meta name="twitter:title" content="Sorteios - Participe ou Crie no Habbo">
+<meta name="twitter:description" content="Confira sorteios em andamento ou crie o seu com prêmios incríveis no Habbo.">
+<meta name="twitter:image" content="https://uabbo.com/img/image_event_settings.png">
 
 <link rel="stylesheet" href="{{ asset('css/sorteio/index.css') }}">
 

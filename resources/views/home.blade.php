@@ -3,6 +3,15 @@
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/feed/home.css') }}">
 <meta name="csrf-token" content="{{ csrf_token() }}">
+<meta name="description" content="Explore o feed com promoções de quartos, sorteios e interações exclusivas para jogadores de Habbo Hotel. Participe e compartilhe suas experiências.">
+<meta name="keywords" content="Habbo, promoções de quartos, sorteios Habbo, comunidade Habbo, Habbo Hotel feed, fã site">
+<meta name="author" content="Fernando Mota">
+<meta property="og:title" content="Feed | Uabbo ">
+<meta property="og:description" content="Entre no feed e descubra promoções, sorteios e eventos exclusivos da comunidade Habbo Hotel.">
+<meta property="og:image" content="https://uabbo.com/img/image_event_settings.png">
+<meta property="og:url" content="https://uabbo.com">
+<meta name="twitter:card" content="https://uabbo.com/img/image_event_settings.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
 

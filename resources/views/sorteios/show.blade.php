@@ -1,6 +1,18 @@
 @extends('layouts.app')
 
 @section('content')
+<meta name="description" content="Participe do sorteio '{{ $sorteio->title }}' e concorra a prêmios incríveis como {{ $sorteio->premios->pluck('premio_tipo')->join(', ') }}. Confira os participantes e os resultados aqui!">
+<meta property="og:title" content="{{ $sorteio->title }}">
+<meta property="og:description" content="{{ $sorteio->description }}">
+<meta property="og:image" content="https://uabbo.com/img/image_event_settings.png">
+<meta property="og:url" content="{{ url()->current() }}">
+<meta property="og:type" content="website">
+
+<meta name="twitter:card" content="https://uabbo.com/img/image_event_settings.png">
+<meta name="twitter:title" content="{{ $sorteio->title }}">
+<meta name="twitter:description" content="{{ $sorteio->description }}">
+<meta name="twitter:image" content="https://uabbo.com/img/image_event_settings.png">
+
 
 <div class="container">
     <!-- Botão de Voltar -->
@@ -191,7 +203,7 @@
    <!-- Card de Comentários para o Sorteio -->
 <div class="card mt-4" style="background-color: #fff; border: none;">
     <div class="card-header" style="background-color: #fff; border: none;">
-        <h4>Comentários para o Sorteio</h4>
+        <h4>Comentários do Sorteio</h4>
     </div>
     <div class="card-body">
         <!-- Formulário para adicionar novo comentário -->

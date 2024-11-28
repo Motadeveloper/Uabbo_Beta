@@ -3,11 +3,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Uabbo') }}</title>
+    <title>{{ config('app.name', 'Uabbo') }} | A Primeira Rede Social do Habbo Hotel </title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
@@ -25,13 +26,21 @@
                 </a>
 
                 <!-- Botão de sanduíche animado clean -->
-                <button class="navbar-toggler custom-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-                    <div class="toggler-icon">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-                </button>
+                <button class="navbar-toggler custom-toggler-avatar collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
+    @auth
+        <img 
+            src="http://www.habbo.com.br/habbo-imaging/avatarimage?&user={{ Auth::user()->name }}&size=s&head_direction=3&direction=2&headonly=1&img_format=png&gesture=std&action=std" 
+            alt="Avatar do usuário" 
+            class="user-avatar">
+    @else
+        <img 
+            src="http://www.habbo.com.br/habbo-imaging/avatarimage?&user=4queijos&size=s&head_direction=3&direction=2&headonly=1&img_format=png&gesture=std&action=std" 
+            alt="Avatar padrão" 
+            class="user-avatar">
+    @endauth
+</button>
+
+
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
@@ -93,6 +102,52 @@
     <!-- Custom CSS -->
     <style>
         /* Animação no texto "Beta" */
+        .custom-toggler-avatar {
+        background-color: #f0f0f0; /* Cinza claro */
+        border: none;
+        border-radius: 50%;
+        padding: 5px;
+        width: 40px; 
+        height: 40px; 
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+    .custom-toggler-avatar .user-avatar {
+        width: 27px;
+        height: 30px;
+        border-radius: 50%;
+    }
+
+    .custom-toggler-avatar:focus {
+    outline: none; /* Remove o outline do estado de foco */
+    box-shadow: none; /* Remove sombras ao focar */
+}
+
+.custom-toggler-avatar:focus {
+    outline: none; /* Remove o foco visual padrão */
+}
+
+.custom-toggler-avatar.active {
+    animation: color-cycle 1.5s infinite; /* Animação contínua */
+}
+
+@keyframes color-cycle {
+    0% {
+        background: linear-gradient(to bottom, #ff007f 50%, #ff80b0 50%); /* Rosa */
+    }
+    33% {
+        background: linear-gradient(to bottom, #8000ff 50%, #b080ff 50%); /* Roxo */
+    }
+    66% {
+        background: linear-gradient(to bottom, #ff0000 50%, #ff8080 50%); /* Vermelho */
+    }
+    100% {
+        background: linear-gradient(to bottom, #ff007f 50%, #ff80b0 50%); /* Retorna ao início */
+    }
+}
         .animated-beta {
             background: linear-gradient(90deg, pink, violet, pink, violet, pink, violet);
             background-size: 400% 100%;
@@ -191,5 +246,15 @@
             }
         }
     </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    const toggler = document.querySelector('.custom-toggler-avatar');
+    
+    toggler.addEventListener('click', function () {
+        toggler.classList.toggle('active'); // Ativa ou desativa a classe
+    });
+});
+
+    </script>
 </body>
 </html>
