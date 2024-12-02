@@ -5,11 +5,12 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class RegisterController extends Controller
 {
@@ -52,7 +53,7 @@ class RegisterController extends Controller
             ]);
         } else {
             return redirect()->back()->withErrors([
-                'habbo_code' => 'A missão não está igual ao código informado ou seu perfil do habbo é privado. Por favor, verifique e tente novamente.',
+                'habbo_code' => 'A missão não está igual ao código informado ou seu perfil do Habbo é privado. Por favor, verifique e tente novamente.',
             ]);
         }
     }
@@ -79,7 +80,7 @@ class RegisterController extends Controller
     {
         return User::create([
             'name' => $data['name'],
-            'password' => ($data['password']), // Certifique-se de que Hash::make é usado aqui
+            'password' => Hash::make($data['password']),
         ]);
     }
 

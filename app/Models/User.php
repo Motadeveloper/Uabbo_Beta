@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable
 {
@@ -24,7 +25,8 @@ class User extends Authenticatable
         'name',         // Nickname ou identificador único do usuário
         'password',     // Senha do usuário
         'level',        // Nível de permissão
-        'habbo_code',   // Código da missão no Habbo
+        'habbo_code',
+        'capa',         // Capa de perfil do usuário
     ];
 
     /**
@@ -36,6 +38,20 @@ class User extends Authenticatable
         'password',          // Ocultar a senha
         'remember_token',    // Ocultar token de lembrete
     ];
+
+    /**
+     * Define o hash da senha automaticamente ao definir o atributo.
+     *
+     * @param string $password
+     */
+    public function setPasswordAttribute($password)
+    {
+        if (!empty($password) && Hash::needsRehash($password)) {
+            $this->attributes['password'] = Hash::make($password);
+        } else {
+            $this->attributes['password'] = $password;
+        }
+    }
 
     /**
      * Verifica se o usuário possui o nível necessário.
@@ -70,18 +86,6 @@ class User extends Authenticatable
     }
 
     /**
-     * Define o hash da senha automaticamente.
-     *
-     * @param string $password
-     */
-    public function setPasswordAttribute($password)
-    {
-        if ($password) {
-            $this->attributes['password'] = bcrypt($password);
-        }
-    }
-
-    /**
      * Valida se o código do Habbo está presente e corresponde.
      *
      * @param string $code
@@ -91,4 +95,22 @@ class User extends Authenticatable
     {
         return strtolower(trim($this->habbo_code)) === strtolower(trim($code));
     }
+
+    public function followers()
+    {
+        return $this->hasMany(Follow::class, 'followed_id');
+    }
+
+    public function following()
+    {
+        return $this->hasMany(Follow::class, 'follower_id');
+    }
+
+    // Função para verificar se o usuário segue outro
+    public function isFollowing($userId)
+    {
+        return Follow::where('follower_id', $this->id)->where('followed_id', $userId)->exists();
+    }
+
+    
 }

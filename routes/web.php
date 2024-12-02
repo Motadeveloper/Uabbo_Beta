@@ -11,6 +11,8 @@ use App\Http\Controllers\ForumPostController;
 use App\Http\Controllers\SorteioController;
 use App\Http\Controllers\ComentarioController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\FollowController;
 
 // Rota principal (redireciona para o feed)
 Route::get('/', function () {
@@ -79,3 +81,18 @@ Route::get('/api/sorteios', [SorteioController::class, 'getSorteios'])->name('so
 Route::fallback(function () {
     return redirect('/');
 });
+
+
+// ROTA PROFILE 
+
+Route::get('/{name}', [ProfileController::class, 'show'])->name('profile.show');
+Route::post('/perfil/{id}/alterar-capa', [ProfileController::class, 'alterarCapa'])->name('perfil.alterarCapa');
+
+Route::post('/follow/{userId}', [FollowController::class, 'follow'])->name('follow');
+Route::post('/unfollow/{userId}', [FollowController::class, 'unfollow'])->name('unfollow');  // Deve ser POST
+Route::post('/follow-toggle/{userId}', [FollowController::class, 'toggleFollow']);
+// routes/web.php
+
+Route::get('/is-following/{userId}', [FollowController::class, 'isFollowing']);
+
+

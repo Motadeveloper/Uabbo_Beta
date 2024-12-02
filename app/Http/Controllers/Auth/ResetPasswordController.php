@@ -4,9 +4,10 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
 class ResetPasswordController extends Controller
@@ -16,12 +17,15 @@ class ResetPasswordController extends Controller
     {
         $habbo_code = bin2hex(random_bytes(5)); // Gera o código único para verificação na missão do Habbo
         session(['habbo_code' => $habbo_code]); // Armazena o código na sessão
+        Log::info('Código de redefinição gerado e armazenado na sessão.', ['habbo_code' => $habbo_code]);
         return view('auth.passwords.reset', compact('habbo_code'));
     }
 
     // Método para redefinir a senha com validação do Habbo Code
     public function sendResetLinkEmail(Request $request)
     {
+        Log::info('Início do processo de redefinição de senha.', ['request' => $request->except('password')]);
+
         // Valida os campos básicos do formulário
         $this->validator($request->all())->validate();
 
@@ -32,8 +36,14 @@ class ResetPasswordController extends Controller
         // Recupera o habbo_code da sessão
         $storedHabboCode = session('habbo_code');
 
+        Log::debug('Verificando código gerado e fornecido.', [
+            'stored_habbo_code' => $storedHabboCode,
+            'provided_habbo_code' => $habboCode,
+        ]);
+
         // Verifica se o código gerado corresponde ao informado pelo usuário
         if (!$storedHabboCode || $habboCode !== $storedHabboCode) {
+            Log::warning('Código da missão inválido ou expirado.', ['username' => $username]);
             return redirect()->back()->withErrors([
                 'habbo_code' => 'O código da missão é inválido ou expirou. Tente novamente.',
             ]);
@@ -47,21 +57,29 @@ class ResetPasswordController extends Controller
             $user = User::where('name', $username)->first();
 
             if (!$user) {
+                Log::error('Usuário não encontrado no banco.', ['username' => $username]);
                 return redirect()->back()->withErrors([
                     'name' => 'Usuário não encontrado no sistema. Verifique o nome digitado.',
                 ]);
             }
 
-            // Atualiza a senha do usuário
-            $user->password = Hash::make($data['password']);
+            // Atualiza a senha utilizando hash
+            $newPassword = $data['password'];
+            Log::info('Atualizando a senha com hash.', ['user_id' => $user->id]);
+
+            $user->password = Hash::make($newPassword);
             $user->save();
+
+            Log::info('Senha atualizada no banco com sucesso.', ['user_id' => $user->id]);
 
             return redirect('/login')->with('success', 'Senha redefinida com sucesso! Faça login com sua nova senha.');
         } elseif ($validationResult === 'profile_private') {
+            Log::warning('Perfil do Habbo está privado.', ['username' => $username]);
             return redirect()->back()->withErrors([
                 'habbo_code' => 'Para confirmar a redefinição, é necessário liberar a visibilidade do perfil nas configurações do Habbo Hotel.',
             ]);
         } else {
+            Log::warning('Código da missão não corresponde.', ['username' => $username]);
             return redirect()->back()->withErrors([
                 'habbo_code' => 'A missão não está igual ao código informado ou seu perfil do Habbo é privado. Verifique e tente novamente.',
             ]);
@@ -93,8 +111,7 @@ class ResetPasswordController extends Controller
         try {
             $response = Http::withOptions(['verify' => false])->get($url);
 
-            // Debug para logs
-            \Log::info('Resposta da API Habbo:', [
+            Log::info('Resposta da API Habbo:', [
                 'status' => $response->status(),
                 'body' => $response->json(),
             ]);
@@ -118,7 +135,7 @@ class ResetPasswordController extends Controller
                 return 'motto_mismatch';
             }
         } catch (\Exception $e) {
-            \Log::error('Erro ao chamar a API Habbo:', ['exception' => $e->getMessage()]);
+            Log::error('Erro ao chamar a API Habbo:', ['exception' => $e->getMessage()]);
             return 'motto_mismatch';
         }
     }

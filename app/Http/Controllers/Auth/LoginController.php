@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
@@ -40,56 +41,49 @@ class LoginController extends Controller
     }
 
     /**
-     * Redirecionar após login com mensagem de sucesso.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  mixed  $user
-     * @return mixed
-     */
-    protected function authenticated(Request $request, $user)
-    {
-        Log::info('Usuário autenticado com sucesso', [
-            'user_id' => $user->id,
-            'name' => $user->name,
-            'ip' => $request->ip(),
-        ]);
-
-        $request->session()->flash('success', 'Login realizado com sucesso! :)');
-        return redirect()->intended($this->redirectPath());
-    }
-
-    /**
-     * Tentativa de login com logs detalhados.
+     * Tentativa de login utilizando `Hash::check`.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return bool
      */
     protected function attemptLogin(Request $request)
     {
-        // Logar os dados recebidos no login (sem senha para segurança)
-        Log::info('Tentativa de login', [
+        Log::info('Tentativa de login.', [
             'name' => $request->input('name'),
             'ip' => $request->ip(),
         ]);
 
-        // Verificar se os dados fornecidos correspondem ao que está no banco
         $credentials = $this->credentials($request);
-        Log::debug('Credenciais recebidas para autenticação', $credentials);
 
-        // Realizar a tentativa de autenticação
-        $loginSuccess = $this->guard()->attempt(
-            $credentials,
-            $request->filled('remember')
-        );
+        // Recuperar o usuário com base nas credenciais fornecidas
+        $user = $this->guard()->getProvider()->retrieveByCredentials($credentials);
 
-        // Logar o resultado da tentativa
-        if ($loginSuccess) {
-            Log::info('Login bem-sucedido', ['name' => $credentials['name']]);
+        if ($user) {
+            Log::debug('Usuário encontrado.', [
+                'user_id' => $user->id,
+                'name' => $user->name,
+            ]);
+
+            // Verificar a senha usando `Hash::check`
+            if (Hash::check($request->input('password'), $user->password)) {
+                Log::info('Senha verificada com sucesso.', [
+                    'user_id' => $user->id,
+                ]);
+
+                // Autenticar o usuário
+                return $this->guard()->login($user, $request->filled('remember'));
+            }
+
+            Log::warning('Falha de autenticação: Senha não corresponde.', [
+                'user_id' => $user->id,
+            ]);
         } else {
-            Log::warning('Login falhou. Credenciais inválidas.', $credentials);
+            Log::warning('Usuário não encontrado para as credenciais fornecidas.', [
+                'name' => $credentials['name'],
+            ]);
         }
 
-        return $loginSuccess;
+        return false;
     }
 
     /**
@@ -100,7 +94,7 @@ class LoginController extends Controller
      */
     protected function sendFailedLoginResponse(Request $request)
     {
-        Log::warning('Falha no login', [
+        Log::warning('Falha no login.', [
             'name' => $request->input('name'),
             'ip' => $request->ip(),
         ]);
@@ -110,5 +104,24 @@ class LoginController extends Controller
             ->withErrors([
                 'login' => 'Usuário ou senha incorretos.',
             ]);
+    }
+
+    /**
+     * Redirecionar após login com mensagem de sucesso.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return mixed
+     */
+    protected function authenticated(Request $request, $user)
+    {
+        Log::info('Usuário autenticado com sucesso.', [
+            'user_id' => $user->id,
+            'name' => $user->name,
+            'ip' => $request->ip(),
+        ]);
+
+        $request->session()->flash('success', 'Login realizado com sucesso!');
+        return redirect()->intended($this->redirectPath());
     }
 }
